@@ -13,7 +13,14 @@ import java.util.Optional;
 
 public class UserDAOSqliteImpl implements UserDAO {
 
+    private final String connectionUrl;
+
     public UserDAOSqliteImpl() {
+        this("jdbc:sqlite:base.db");
+    }
+
+    public UserDAOSqliteImpl(String connectionUrl) {
+        this.connectionUrl = connectionUrl;
         try (var connection = this.newConnection();
              var statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users(" +
@@ -28,7 +35,7 @@ public class UserDAOSqliteImpl implements UserDAO {
 
     private Connection newConnection() {
         try {
-            return DriverManager.getConnection("jdbc:sqlite:base.db");
+            return DriverManager.getConnection(this.connectionUrl);
         } catch (SQLException e) {
             throw new RuntimeException("Error connecting to the database", e);
         }
