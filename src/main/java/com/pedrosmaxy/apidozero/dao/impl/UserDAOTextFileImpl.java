@@ -11,11 +11,24 @@ import java.util.Scanner;
 
 public class UserDAOTextFileImpl implements UserDAO {
 
-    private static final String FILE_PATH = "./base.txt";
-    private static int ID_INCREMENTAL = UserDAOTextFileImpl.getLastId();
+    private int idIncremental;
+    private final String filePath;
 
-    private static int getLastId() {
-        File file = new File(FILE_PATH);
+    public UserDAOTextFileImpl(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IllegalArgumentException("Caminho do arquivo não pode ser nulo ou vazio");
+        }
+        this.filePath = filePath;
+        this.idIncremental = getLastId();
+    }
+
+    public UserDAOTextFileImpl() {
+        this("./base.txt");
+    }
+
+    private int getLastId() {
+        assert filePath != null;
+        File file = new File(filePath);
 
         if (!file.exists()) {
             return 0;
@@ -44,7 +57,7 @@ public class UserDAOTextFileImpl implements UserDAO {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        File file = new File(FILE_PATH);
+        File file = new File(filePath);
 
         if (!file.exists()) {
             return users;
@@ -87,8 +100,8 @@ public class UserDAOTextFileImpl implements UserDAO {
             throw new RuntimeException("Email já está em uso");
         }
 
-        ID_INCREMENTAL++;
-        newUser.setId(ID_INCREMENTAL);
+        idIncremental++;
+        newUser.setId(idIncremental);
 
         List<User> users = getAll();
         users.add(newUser);
@@ -132,7 +145,7 @@ public class UserDAOTextFileImpl implements UserDAO {
     }
 
     private void saveAllUsers(List<User> users) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (User user : users) {
                 writer.write(user.getId() + "-" + user.getName() + "-" + user.getEmail() + "\n");
             }
