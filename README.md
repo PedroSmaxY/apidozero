@@ -7,7 +7,7 @@ A simple and lightweight REST API built with vanilla Java (no frameworks).
 This project demonstrates how to build a REST API from scratch using only standard Java libraries, without relying on external frameworks like Spring. It implements a complete CRUD for user management with:
 
 - HTTP server using `com.sun.net.httpserver`
-- File-based persistence
+- Multiple persistence options (SQLite and text file)
 - JSON request/response handling
 - REST architectural style
 
@@ -15,7 +15,9 @@ This project demonstrates how to build a REST API from scratch using only standa
 
 - **User Management**: Create, read, update, and delete operations for users
 - **RESTful Endpoints**: Standard HTTP methods with proper status codes
-- **File Storage**: Simple text file-based persistence
+- **Multiple Storage Options**: 
+  - SQLite database persistence (default)
+  - Text file-based persistence (alternative)
 - **Email Validation**: Basic validation to prevent duplicate emails
 - **CORS Support**: Cross-origin resource sharing headers
 
@@ -38,8 +40,8 @@ POST /api/user
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com"
+"name": "John Doe",
+"email": "john@example.com"
 }
 ```
 
@@ -49,9 +51,9 @@ HTTP/1.1 201 Created
 Content-Type: application/json
 
 {
-  "id": 1,
-  "name": "John Doe",
-  "email": "john@example.com"
+"id": 1,
+"name": "John Doe",
+"email": "john@example.com"
 }
 ```
 
@@ -60,6 +62,8 @@ Content-Type: application/json
 - `Main.java` - Application entry point and server configuration
 - `controllers/` - HTTP request handlers
 - `dao/` - Data access objects for persistence
+  - `impl/UserDAOSqliteImpl.java` - SQLite implementation
+  - `impl/UserDAOTextFileImpl.java` - Text file implementation
 - `entities/` - Domain model classes
 
 ## Running the Application
@@ -69,12 +73,27 @@ Content-Type: application/json
 - Maven
 
 ### Build and Run
+
+This project uses Maven Shade Plugin to create a fat JAR with all dependencies included:
+
 ```bash
 mvn clean package
 java -jar target/apidozero-1.0-SNAPSHOT.jar
 ```
 
-The server will start on port 8000 by default.
+The server will start on port 3000 by default.
+
+### Switching Persistence Implementations
+
+To change between SQLite and text file storage, modify the `Main.java` file:
+
+```java
+// For SQLite implementation (default)
+private final static UserDAO userDAO = new UserDAOSqliteImpl();
+
+// For text file implementation
+// private final static UserDAO userDAO = new UserDAOTextFileImpl();
+```
 
 ## Educational Purpose
 
@@ -83,8 +102,9 @@ This project was created for educational purposes to understand how modern web f
 1. HTTP protocol fundamentals
 2. Request and response handling
 3. REST architectural principles
-4. Data persistence patterns
+4. Data persistence patterns (both SQL and file-based)
 5. Java I/O operations
+6. DAO pattern with multiple implementations
 
 ## License
 
