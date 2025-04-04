@@ -65,7 +65,7 @@ Content-Type: application/json
 ## Running the Application
 
 ### Prerequisites
-- Java 17 or higher
+- Java 21
 - Maven
 
 ### Build and Run
