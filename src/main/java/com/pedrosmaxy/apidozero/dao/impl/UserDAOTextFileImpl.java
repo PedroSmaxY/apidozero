@@ -15,7 +15,6 @@ public class UserDAOTextFileImpl implements UserDAO {
     private static int ID_INCREMENTAL = UserDAOTextFileImpl.getLastId();
 
     private static int getLastId() {
-        List<User> users = new ArrayList<>();
         File file = new File(FILE_PATH);
 
         if (!file.exists()) {
